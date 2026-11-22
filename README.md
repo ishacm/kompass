@@ -1,75 +1,114 @@
-# Kompass
+# Kompass 🧭
 
 [![tests](https://github.com/ishacm/kompass/actions/workflows/eval.yml/badge.svg)](https://github.com/ishacm/kompass/actions/workflows/eval.yml)
+![cost](https://img.shields.io/badge/runs%20at-%E2%82%AC0-22c55e)
+![license](https://img.shields.io/badge/license-MIT-blue)
 
-A self-learning GTM engine for DACH deep-tech (robotics, automation, industrial AI).
-**Agents propose, evals check, humans approve.**
+**A GTM engine for DACH robotics and industrial-AI startups that finds companies with a real reason to buy *now*, writes one good message instead of a thousand bad ones, and gets smarter every time a human corrects it.**
 
-| Module | What it does | Run |
+*Agents propose. Evals check. Humans approve.*
+
+<p align="center"><img src="docs/gifs/hero.gif" width="680" alt="A compass spins, then points at a Tier A account hiring a Founding AE"></p>
+
+---
+
+## Why this exists
+
+Cold email reply rates keep falling because inboxes are full of almost-personalised AI spam. The fix isn't more volume. It's better timing, real evidence, and a human in the loop.
+
+<p align="center"><img src="docs/gifs/volume.gif" width="680" alt="Left: an AI SDR sends thousands of 'Quick q?' emails. Right: Kompass sends one cited, human-approved message"></p>
+
+## What's inside
+
+| | Module | In one line |
 |---|---|---|
-| [01 Context layer](specs/01-context-layer.md) | Accounts, signals and strategy in DuckDB; segments grounded in each company's homepage; served read-only to agents over MCP | `python -m kompass.ingest` · `classify` · `score` · `report` · `mcp_server` |
-| [02 Signal agent](specs/02-signal-agent.md) | Public job boards (Personio, Greenhouse, Lever, Ashby) → signals → compounding activation → cited draft with persona + DACH channel policy → Slack/CLI approval | `python -m kompass.signals.run` · `review.cli` · `signals.report` |
-| [03 GTM CI/CD lab](specs/03-gtm-ci-cd-lab.md) | Versioned prompts, golden set, CI gate, A/B with significance, learning loop that ranks reviewer edits by impact and proposes a PR, weekly drift check | `python eval/run_eval.py` · `eval/gate.py` · `kompass.learn.ab` · `kompass.learn.edits` |
-| [04 AEO radar](specs/04-aeo-radar.md) | 20 buyer questions in German + English across Claude / OpenAI / Gemini / Perplexity: share of voice, DE–EN gap, stability, cited sources, untracked vendors, gap signals into Module 2 | `python -m kompass.aeo.run` · `kompass.aeo.analyze --emit-signals --discover` |
-| [05 Inbound agent](specs/05-inbound-agent.md) | Portfolio contact form with AI disclosure + consent; qualifies via the context layer; hot leads get an instant booking link and a Slack brief; every failure goes to a human; 90-day retention; optional HubSpot | `uvicorn kompass.inbound.app:app` · `inbound.retention` · `inbound.report` |
+| 🧠 | [**Context layer**](specs/01-context-layer.md) | Every target company, scored against a written ICP and labelled from its own website. Claude can query it over MCP. |
+| 📡 | [**Signal agent**](specs/02-signal-agent.md) | Reads job boards, spots "they just started hiring sales", and drafts a cited note. Nothing sends without your OK. |
+| 🧪 | [**GTM CI/CD lab**](specs/03-gtm-ci-cd-lab.md) | Prompts ship like code: tested, A/B'd, and improved from your edits through pull requests. |
+| 🔍 | [**AEO radar**](specs/04-aeo-radar.md) | Who do AI assistants recommend to buyers, in German *and* English? |
+| 📥 | [**Inbound agent**](specs/05-inbound-agent.md) | A contact form that qualifies leads in seconds, says it's an AI, and hands every lead to a human. |
 
-**How each module was reviewed and hardened:** [REVIEWS.md](REVIEWS.md)
+<p align="center"><img src="docs/gifs/gate.gif" width="680" alt="A prompt promising 300% growth is blocked at the CI gate; a cited prompt passes"></p>
 
-## Try it in 1 minute (offline, no API key)
+## Try it in 60 seconds
+
+No API key, no account, no cost:
+
 ```bash
+git clone https://github.com/ishacm/kompass && cd kompass
 pip install -r requirements.txt pytest
-python scripts/demo.py           # all five modules end to end on fixtures (mock LLM)
-KOMPASS_LLM=mock pytest -q       # 78 tests
+python scripts/demo.py        # all five modules, end to end
+KOMPASS_LLM=mock pytest -q    # 78 tests
 ```
-Mock mode uses keyword rules instead of a model. It proves the system works; its numbers are never results.
 
-## Free mode (default): runs at €0
+<p align="center"><img src="docs/gifs/demo.gif" width="680" alt="Terminal running the demo across all five modules"></p>
 
-| Piece | Free option used | Trade-off |
-|---|---|---|
-| AI for classification, signals, drafts, evals | **Groq** free tier (`openai/gpt-oss-120b`), set in `kompass/config.yaml` → `llm.provider` | Daily rate limits; draft quality below Claude. Switch any time: `KOMPASS_PROVIDER=anthropic` |
-| Scheduled jobs + CI | **GitHub Actions**, free on public repos | none for this workload |
-| AEO radar | **Gemini** free tier only (set a current model id in `config.yaml`) | Can't measure ChatGPT / Claude answers without their paid APIs; label reports "Gemini only" |
-| Inbound form | **Render free** (`render.yaml`) + **HubSpot free CRM** as the lead store | Sleeps after 15 min (keep awake with a free pinger on `/healthz`); no disk, so the server rebuilds its account list from `data/accounts_public.csv` on start and leads live in HubSpot |
+> Mock mode swaps the AI for simple rules. It proves the plumbing works; it doesn't produce results to brag about.
 
-**Zero-cost guard:** paid providers (Claude, OpenAI, Perplexity) are refused unless `KOMPASS_ALLOW_PAID=true` is set on purpose; scheduled GitHub jobs are never given paid keys; the default Render blueprint (`render.yaml`) is the free plan (the paid one is `render.paid.yaml.example` and is never picked up automatically). To stay at €0, don't link a billing account to Gemini/Google AI Studio and don't upgrade Groq.
+## Run it for real (still €0)
 
-**No secrets in code:** keys are read only from environment variables / GitHub & Render secrets (`.env.example` lists them; `.env` is git-ignored). `scripts/check_secrets.py` scans every file on each push and fails CI if anything key-shaped is committed. Optional local hook: `cp scripts/check_secrets.py .git/hooks/pre-commit`.
+1. Get a free [Groq](https://console.groq.com) key and add it as `GROQ_API_KEY` in **Settings → Secrets → Actions**.
+2. Set the variable `KOMPASS_ENABLED=true`. Signals now run every weekday on GitHub Actions.
+3. Optional: deploy the inbound form with **Render → New → Blueprint** (`render.yaml` is the free plan).
 
-Privacy guard: inbound lead text is never sent to a provider whose free tier trains on prompts (Gemini free is marked so in `config.yaml`). If configured that way, leads route to a human instead.
+<details>
+<summary><b>Commands for running locally</b></summary>
 
-Other free/local options already wired in: `ollama` (local models) and any OpenAI-compatible endpoint.
-
-## Run it for real
 ```bash
-export GROQ_API_KEY=...                      # free mode; or ANTHROPIC_API_KEY + KOMPASS_PROVIDER=anthropic
-                                             # AEO: GEMINI_API_KEY (free) / OPENAI / PERPLEXITY / ANTHROPIC
+cp .env.example .env                          # fill in GROQ_API_KEY (never committed)
 python -m kompass.ingest data/seed_accounts.csv
 python -m kompass.classify && python -m kompass.score && python -m kompass.report
-python -m kompass.export_accounts            # public scored list for the free inbound host (commit it)
-python -m kompass.signals.run --detect       # finds each account's job board, then runs the pipeline
-python -m kompass.review.cli --reviewer you  # or Slack: SLACK_BOT_TOKEN, SLACK_CHANNEL, SLACK_SIGNING_SECRET
-python eval/run_eval.py --versions v1 v2 --judge --judge-model <a different model>
-python -m kompass.aeo.run && python -m kompass.aeo.analyze --emit-signals --discover
-uvicorn kompass.inbound.app:app --port 8080
-claude mcp add kompass -- python -m kompass.mcp_server   # let Claude query the context layer
+python -m kompass.signals.run --detect        # job boards -> signals -> drafts
+python -m kompass.review.cli --reviewer you   # approve / edit / reject
+python eval/run_eval.py --versions v1 v2      # compare prompts on the golden set
+python -m kompass.aeo.run && python -m kompass.aeo.analyze --emit-signals
+uvicorn kompass.inbound.app:app --port 8080   # the contact form
+claude mcp add kompass -- python -m kompass.mcp_server
 ```
+</details>
 
-## Configure
-- `context/icp.yaml` — segments, firmographics, scoring weights, tiers
-- `context/positioning.yaml` — personas, pains, value props, writing rules
-- `kompass/config.yaml` — AI provider (free: Groq), models, prices (fill in for cost reports), activation thresholds, persona and channel policy, AEO providers, inbound settings (booking link, retention)
-- `prompts/registry.yaml` — which prompt version is live and any A/B split (change only by PR)
+<details>
+<summary><b>What "free mode" trades off</b></summary>
 
-## Before publishing any number
-1. Replace the 9 seed accounts with ~150 verified ones; label 50 by hand → `eval/label_check.py`
-2. Label ~100 real job postings → `eval/signal_check.py`
-3. Replace synthetic golden cases with 25 real ones (`eval/golden/promote.py` builds them from reviewed drafts)
-4. Run everything live, date the run, and state the method next to each number
+| Piece | Free option | Trade-off |
+|---|---|---|
+| AI | Groq free tier | Daily limits; drafts a notch below Claude (`KOMPASS_PROVIDER=anthropic` + `KOMPASS_ALLOW_PAID=true` to switch) |
+| Scheduled jobs + CI | GitHub Actions | Free on public repos |
+| AEO radar | Gemini free tier | Measures Gemini only; ChatGPT/Claude need paid APIs |
+| Inbound form | Render free + HubSpot free CRM | Sleeps after 15 min idle (ping `/healthz`); leads live in HubSpot |
+</details>
 
-## Layout
+## Safety rails 🛡️
+
+- **Humans approve everything** that reaches a prospect. Prompt changes need a merged PR.
+- **Every claim has a source:** segments cite the company's website, drafts cite the job post.
+- **DACH-aware:** suggests LinkedIn or a call where cold email is legally risky (UWG §7); the inbound form discloses AI use (EU AI Act Art. 50) and asks for consent.
+- **No secrets in code:** keys live in GitHub/Render secrets; CI fails if anything key-shaped is committed.
+- **No surprise bills:** paid AI providers are blocked unless explicitly allowed.
+
+## How it was built
+
+Each module was built, then torn apart in a senior-GTM-engineer review, then fixed before moving on. The whole story, including what failed first time, is in **[REVIEWS.md](REVIEWS.md)**.
+
+<details>
+<summary><b>Repo map</b></summary>
+
 ```
-context/   strategy as code        kompass/   pipeline code (signals/, review/, learn/, aeo/, inbound/)
-prompts/   versioned prompts       eval/      golden set, judge, gate, hand-label checks
-aeo/       questions + vendors     specs/     one spec per module      tests/  78 tests + fixtures
+context/    ICP + positioning, written for agents
+kompass/    pipeline code: signals/ review/ learn/ aeo/ inbound/
+prompts/    versioned prompts + registry (live version, A/B split)
+eval/       golden set, judge, CI gate, hand-label checks
+aeo/        buyer questions (DE + EN) and vendor list
+specs/      one spec per module
+tests/      78 tests + fixtures
+docs/       the GIFs above (python docs/make_gifs.py)
 ```
+</details>
+
+### Before quoting any number
+
+The repo ships with 9 seed accounts and synthetic test data, so every number above comes from mock mode. Real results need about 150 verified accounts, hand-labelled checks and a live run, each dated with its method stated. That's the next step.
+
+---
+
+<sub>MIT licensed · built by [Isha Chaudhari](https://github.com/ishacm) · GIFs are original and generated by <code>docs/make_gifs.py</code></sub>
