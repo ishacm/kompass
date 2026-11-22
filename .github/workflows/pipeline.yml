@@ -1,7 +1,8 @@
 name: Scheduled pipeline
 
 # Off until you set the repository variable KOMPASS_ENABLED=true
-# (Settings -> Secrets and variables -> Actions -> Variables) and add the secrets below.
+# (Settings -> Secrets and variables -> Actions -> Variables) and add at least GROQ_API_KEY (free).
+# Optional variable KOMPASS_PROVIDER=anthropic switches to Claude.
 on:
   schedule:
     - cron: "23 5 * * 1-5"    # weekdays: job-board signals + drafts for review
@@ -19,6 +20,8 @@ jobs:
     env:
       KOMPASS_LLM: live
       KOMPASS_DB: data/kompass.duckdb
+      KOMPASS_PROVIDER: ${{ vars.KOMPASS_PROVIDER || 'groq' }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

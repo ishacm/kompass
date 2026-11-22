@@ -105,6 +105,11 @@ def api_lead(lead: LeadIn, request: Request):
                         status_code=400 if res["route"] == "no_consent" else 200)
 
 
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
+
+
 @app.get("/privacy", response_class=HTMLResponse)
 def privacy():
     return f"""<!doctype html>{STYLE}<h1>Privacy note</h1>

@@ -1,9 +1,42 @@
-default_model: claude-sonnet-5-5
+llm:
+  # Which provider every module uses. "groq" = free mode. Override per run: KOMPASS_PROVIDER=anthropic
+  provider: groq
+  providers:
+    groq:            # free tier, OpenAI-compatible; get a key at console.groq.com
+      kind: openai_compatible
+      base_url: "https://api.groq.com/openai/v1"
+      key_env: GROQ_API_KEY
+      model: openai/gpt-oss-120b
+      extra: {reasoning_effort: low}     # dropped automatically if the API rejects it
+      min_max_tokens: 2048
+      free_tier_trains_on_data: false    # confirm in Groq's current terms
+    anthropic:       # paid, best draft quality
+      kind: anthropic
+      key_env: ANTHROPIC_API_KEY
+      model: claude-sonnet-5-5
+      free_tier_trains_on_data: false
+    gemini:          # free tier; set `model` to a current id from Google AI Studio before use
+      kind: openai_compatible
+      base_url: "https://generativelanguage.googleapis.com/v1beta/openai"
+      key_env: GEMINI_API_KEY
+      model: null
+      free_tier_trains_on_data: true     # free-tier prompts are used to improve Google's products
+    ollama:          # fully local and free, if Ollama runs on this machine
+      kind: openai_compatible
+      base_url: "http://localhost:11434/v1"
+      key_env: null
+      model: null
+      free_tier_trains_on_data: false
+  # Purposes whose prompts contain personal data. They are refused on providers that may train on them.
+  personal_data_purposes: [inbound_need]
+  # Optional: pin a purpose to a provider, e.g. {draft: anthropic}
+  purpose_providers: {}
 
-# Fill in from your provider's current price page (USD or EUR per 1M tokens).
-# Left empty on purpose: cost reports show tokens only until you add real prices.
+# Fill in from your provider's current price page (per 1M tokens), keyed "provider:model".
+# Left empty on purpose: cost reports show tokens only until you add real prices. Free tiers cost 0.
 prices_per_million_tokens:
-  claude-sonnet-5-5: {input: null, output: null}
+  "groq:openai/gpt-oss-120b": {input: 0, output: 0}
+  "anthropic:claude-sonnet-5-5": {input: null, output: null}
 
 activation:            # Module 2: when does an account become worth a human's attention?
   window_days: 30
@@ -40,10 +73,10 @@ aeo:
   # Providers without an API key in the environment are skipped and reported.
   # Set `model` to a current model id from each provider's docs before running.
   providers:
-    - {id: claude, kind: anthropic, model: claude-sonnet-5-5}
+    - {id: gemini_free, kind: openai_compatible, base_url: "https://generativelanguage.googleapis.com/v1beta/openai",
+       key_env: GEMINI_API_KEY, model: null}         # free: the only assistant you can measure at no cost
+    - {id: claude, kind: anthropic, key_env: ANTHROPIC_API_KEY, model: claude-sonnet-5-5}
     - {id: openai, kind: openai_compatible, base_url: "https://api.openai.com/v1", key_env: OPENAI_API_KEY, model: null}
-    - {id: gemini, kind: openai_compatible, base_url: "https://generativelanguage.googleapis.com/v1beta/openai",
-       key_env: GEMINI_API_KEY, model: null}
     - {id: perplexity, kind: openai_compatible, base_url: "https://api.perplexity.ai", key_env: PERPLEXITY_API_KEY,
        model: null}
 

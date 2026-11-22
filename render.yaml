@@ -1,4 +1,4 @@
-# One-click deploy of the inbound agent on Render (render.com -> New -> Blueprint -> this repo).
+# PAID deploy of the inbound agent on Render (persistent disk, no sleep). Free option: render.free.yaml
 services:
   - type: web
     name: kompass-inbound
@@ -6,6 +6,8 @@ services:
     plan: starter          # a persistent disk needs a paid instance; the DB holds consented leads
     disk: {name: kompass-data, mountPath: /data, sizeGB: 1}
     envVars:
+      - {key: KOMPASS_PROVIDER, value: groq}
+      - {key: GROQ_API_KEY, sync: false}
       - {key: ANTHROPIC_API_KEY, sync: false}
       - {key: SLACK_BOT_TOKEN, sync: false}
       - {key: SLACK_CHANNEL, sync: false}

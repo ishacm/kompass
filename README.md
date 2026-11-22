@@ -19,15 +19,30 @@ A self-learning GTM engine for DACH deep-tech (robotics, automation, industrial 
 ```bash
 pip install -r requirements.txt pytest
 python scripts/demo.py           # all five modules end to end on fixtures (mock LLM)
-KOMPASS_LLM=mock pytest -q       # 55 tests
+KOMPASS_LLM=mock pytest -q       # 65 tests
 ```
 Mock mode uses keyword rules instead of a model. It proves the system works; its numbers are never results.
 
+## Free mode (default): runs at €0
+
+| Piece | Free option used | Trade-off |
+|---|---|---|
+| AI for classification, signals, drafts, evals | **Groq** free tier (`openai/gpt-oss-120b`), set in `kompass/config.yaml` → `llm.provider` | Daily rate limits; draft quality below Claude. Switch any time: `KOMPASS_PROVIDER=anthropic` |
+| Scheduled jobs + CI | **GitHub Actions**, free on public repos | none for this workload |
+| AEO radar | **Gemini** free tier only (set a current model id in `config.yaml`) | Can't measure ChatGPT / Claude answers without their paid APIs; label reports "Gemini only" |
+| Inbound form | **Render free** (`render.free.yaml`) + **HubSpot free CRM** as the lead store | Sleeps after 15 min (keep awake with a free pinger on `/healthz`); no disk, so the server rebuilds its account list from `data/accounts_public.csv` on start and leads live in HubSpot |
+
+Privacy guard: inbound lead text is never sent to a provider whose free tier trains on prompts (Gemini free is marked so in `config.yaml`). If configured that way, leads route to a human instead.
+
+Other free/local options already wired in: `ollama` (local models) and any OpenAI-compatible endpoint.
+
 ## Run it for real
 ```bash
-export ANTHROPIC_API_KEY=...                 # + OPENAI_API_KEY / GEMINI_API_KEY / PERPLEXITY_API_KEY for AEO
+export GROQ_API_KEY=...                      # free mode; or ANTHROPIC_API_KEY + KOMPASS_PROVIDER=anthropic
+                                             # AEO: GEMINI_API_KEY (free) / OPENAI / PERPLEXITY / ANTHROPIC
 python -m kompass.ingest data/seed_accounts.csv
 python -m kompass.classify && python -m kompass.score && python -m kompass.report
+python -m kompass.export_accounts            # public scored list for the free inbound host (commit it)
 python -m kompass.signals.run --detect       # finds each account's job board, then runs the pipeline
 python -m kompass.review.cli --reviewer you  # or Slack: SLACK_BOT_TOKEN, SLACK_CHANNEL, SLACK_SIGNING_SECRET
 python eval/run_eval.py --versions v1 v2 --judge --judge-model <a different model>
@@ -39,7 +54,7 @@ claude mcp add kompass -- python -m kompass.mcp_server   # let Claude query the 
 ## Configure
 - `context/icp.yaml` — segments, firmographics, scoring weights, tiers
 - `context/positioning.yaml` — personas, pains, value props, writing rules
-- `kompass/config.yaml` — model, prices (fill in for cost reports), activation thresholds, persona and channel policy, AEO providers, inbound settings (booking link, retention)
+- `kompass/config.yaml` — AI provider (free: Groq), models, prices (fill in for cost reports), activation thresholds, persona and channel policy, AEO providers, inbound settings (booking link, retention)
 - `prompts/registry.yaml` — which prompt version is live and any A/B split (change only by PR)
 
 ## Before publishing any number
@@ -52,5 +67,5 @@ claude mcp add kompass -- python -m kompass.mcp_server   # let Claude query the 
 ```
 context/   strategy as code        kompass/   pipeline code (signals/, review/, learn/, aeo/, inbound/)
 prompts/   versioned prompts       eval/      golden set, judge, gate, hand-label checks
-aeo/       questions + vendors     specs/     one spec per module      tests/  55 tests + fixtures
+aeo/       questions + vendors     specs/     one spec per module      tests/  65 tests + fixtures
 ```

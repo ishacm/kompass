@@ -103,8 +103,19 @@ The bar: **Would a founder trust this system with their market and their brand?*
 
 ## Whole-system check
 
-- **55 tests** across all five modules, all running offline in mock mode (`KOMPASS_LLM=mock pytest`).
+- **65 tests** across all five modules and free mode, all running offline in mock mode (`KOMPASS_LLM=mock pytest`).
 - **Nothing reaches a prospect without a human:** outbound drafts need approval; blocked drafts can't be approved; prompt changes need a merged PR; inbound hot leads get a booking link but every handoff is read by a person.
 - **Every claim is traceable:** segments cite the homepage, signals cite the posting, drafts cite signals, AEO findings keep the model's sentence.
 - **Every number has a script:** `kompass.report`, `signals.report`, `eval/run_eval.py`, `aeo.analyze`, `inbound.report`, plus hand-label checks for segments, signals and routing.
 - **Not yet real:** no published number exists until it comes from a live run on real, verified data. Mock output and synthetic cases are labelled everywhere they appear.
+
+---
+
+## Free mode
+
+Switched the default AI provider to Groq's free tier and made every module provider-agnostic (Anthropic or any OpenAI-compatible API, including Gemini and local Ollama). Reviewed for what an operator would worry about when going free:
+
+- **Personal data on free tiers:** providers whose free tier trains on prompts are flagged in config; inbound lead text is refused there and routed to a human (tested).
+- **Rate limits:** 429s are retried after the provider's `retry-after`; a rejected optional parameter is dropped and retried instead of failing the run.
+- **Stateless free hosting:** the inbound server rebuilds its account list from a committed, company-level CSV on start (no LLM calls, no personal data in the repo); leads are stored in HubSpot's free CRM.
+- **Honest limits:** AEO at €0 measures Gemini only; ChatGPT and Claude visibility need paid APIs.

@@ -1,0 +1,20 @@
+# FREE deploy of the inbound agent on Render (render.com -> New -> Blueprint -> pick this file).
+# Trade-offs of the free instance (see README "Free mode"):
+#  - sleeps after 15 min without traffic, ~1 min to wake: keep it awake with a free uptime pinger
+#    (e.g. cron-job.org) hitting https://<your-service>.onrender.com/healthz every 10 minutes
+#  - no persistent disk: the local DB is rebuilt on every start from data/accounts_public.csv,
+#    and leads are kept in HubSpot's free CRM (set HUBSPOT_TOKEN), not on the server
+services:
+  - type: web
+    name: kompass-inbound
+    runtime: docker
+    plan: free
+    dockerCommand: sh scripts/start_inbound.sh
+    healthCheckPath: /healthz
+    envVars:
+      - {key: KOMPASS_PROVIDER, value: groq}
+      - {key: GROQ_API_KEY, sync: false}
+      - {key: HUBSPOT_TOKEN, sync: false}
+      - {key: SLACK_BOT_TOKEN, sync: false}
+      - {key: SLACK_CHANNEL, sync: false}
+      - {key: SLACK_SIGNING_SECRET, sync: false}

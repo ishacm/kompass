@@ -37,6 +37,20 @@ def to_int(v):
         return None
 
 
+def _load_classifications(con, paths):
+    for path in paths:
+        with open(path, newline="", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                if not row.get("segment"):
+                    continue
+                con.execute("""UPDATE accounts SET segment = COALESCE(segment, ?),
+                                 segment_confidence = COALESCE(segment_confidence, NULLIF(?, '')),
+                                 sells_b2b_industrial = COALESCE(sells_b2b_industrial, ?)
+                               WHERE domain = ?""",
+                            [row["segment"], row.get("segment_confidence", ""),
+                             (row.get("sells_b2b_industrial") or "").lower() == "true", norm_domain(row["domain"])])
+
+
 def ingest(paths):
     con = connect()
     rows_in = merged = new = 0
@@ -83,6 +97,7 @@ def ingest(paths):
                     )
     con.execute("INSERT INTO ingest_log (rows_in, rows_merged, rows_new) VALUES (?, ?, ?)",
                 [rows_in, merged, new])
+    _load_classifications(con, paths)   # optional columns from kompass.export_accounts
     print(f"rows in: {rows_in} | new accounts: {new} | merged duplicates: {merged}")
     con.close()
 

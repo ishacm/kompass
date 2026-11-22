@@ -24,7 +24,10 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     env:
+      KOMPASS_PROVIDER: ${{ vars.KOMPASS_PROVIDER || 'groq' }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      HAS_KEY: ${{ secrets.GROQ_API_KEY != '' || secrets.ANTHROPIC_API_KEY != '' }}
       KOMPASS_LLM: live
     steps:
       - uses: actions/checkout@v4
@@ -38,12 +41,12 @@ jobs:
           V=$(git diff --name-only origin/${{ github.base_ref }}... -- prompts/draft/ | grep -oE 'v[0-9]+' | sort -u | tr '\n' ' ')
           echo "versions=$V" >> "$GITHUB_OUTPUT"
       - name: Refuse to pass silently without a live eval
-        if: steps.changed.outputs.versions != '' && env.ANTHROPIC_API_KEY == ''
+        if: steps.changed.outputs.versions != '' && env.HAS_KEY != 'true'
         run: |
-          echo "::error::Prompt files changed but ANTHROPIC_API_KEY is not set, so the live eval gate cannot run."
+          echo "::error::Prompt files changed but no GROQ_API_KEY or ANTHROPIC_API_KEY secret is set, so the live eval gate cannot run."
           exit 1
       - name: Live eval + gate
-        if: steps.changed.outputs.versions != '' && env.ANTHROPIC_API_KEY != ''
+        if: steps.changed.outputs.versions != '' && env.HAS_KEY == 'true'
         run: |
           PROD=$(python -c "import yaml;print(yaml.safe_load(open('prompts/registry.yaml'))['draft']['production'])")
           python eval/run_eval.py --versions $PROD ${{ steps.changed.outputs.versions }} --out eval/reports/pr.json
@@ -57,6 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {issues: write, contents: read}
     env:
+      KOMPASS_PROVIDER: ${{ vars.KOMPASS_PROVIDER || 'groq' }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       KOMPASS_LLM: live
       GH_TOKEN: ${{ github.token }}
