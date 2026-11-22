@@ -103,7 +103,7 @@ The bar: **Would a founder trust this system with their market and their brand?*
 
 ## Whole-system check
 
-- **65 tests** across all five modules and free mode, all running offline in mock mode (`KOMPASS_LLM=mock pytest`).
+- **78 tests** across all five modules, free mode and safety guards, all running offline in mock mode (`KOMPASS_LLM=mock pytest`).
 - **Nothing reaches a prospect without a human:** outbound drafts need approval; blocked drafts can't be approved; prompt changes need a merged PR; inbound hot leads get a booking link but every handoff is read by a person.
 - **Every claim is traceable:** segments cite the homepage, signals cite the posting, drafts cite signals, AEO findings keep the model's sentence.
 - **Every number has a script:** `kompass.report`, `signals.report`, `eval/run_eval.py`, `aeo.analyze`, `inbound.report`, plus hand-label checks for segments, signals and routing.
@@ -119,3 +119,11 @@ Switched the default AI provider to Groq's free tier and made every module provi
 - **Rate limits:** 429s are retried after the provider's `retry-after`; a rejected optional parameter is dropped and retried instead of failing the run.
 - **Stateless free hosting:** the inbound server rebuilds its account list from a committed, company-level CSV on start (no LLM calls, no personal data in the repo); leads are stored in HubSpot's free CRM.
 - **Honest limits:** AEO at €0 measures Gemini only; ChatGPT and Claude visibility need paid APIs.
+
+---
+
+## Secrets and cost safety
+
+- **Audit:** full git history scanned for Anthropic, OpenAI, Groq, Google, Perplexity, Slack, HubSpot and GitHub tokens, private keys, hard-coded secrets, `.env`/DB files and personal data: nothing found.
+- **Prevention:** `scripts/check_secrets.py` runs in CI on every push/PR (and as an optional pre-commit hook); `.gitignore` covers `.env*`, keys and DB files; `.env.example` documents variables without values.
+- **Cost:** paid providers need an explicit `KOMPASS_ALLOW_PAID=true`; scheduled jobs only receive free-provider keys; the default Render blueprint is the free plan. Tests enforce all three.

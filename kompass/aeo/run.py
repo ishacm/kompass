@@ -71,7 +71,10 @@ def active_providers(only: list[str] | None = None) -> tuple[list[dict], list[st
         if mode() == "mock":
             use.append(p)
             continue
-        if p["kind"] == "anthropic" and not os.environ.get("ANTHROPIC_API_KEY"):
+        from kompass.llm import paid_allowed
+        if p.get("paid") and not paid_allowed():
+            skipped.append(f"{p['id']}: paid provider (set KOMPASS_ALLOW_PAID=true to use)")
+        elif p["kind"] == "anthropic" and not os.environ.get("ANTHROPIC_API_KEY"):
             skipped.append(f"{p['id']}: no ANTHROPIC_API_KEY")
         elif p["kind"] != "anthropic" and not os.environ.get(p.get("key_env", "")):
             skipped.append(f"{p['id']}: no {p.get('key_env')}")

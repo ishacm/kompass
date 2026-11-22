@@ -1,0 +1,19 @@
+# PAID option, NOT used by default (costs money). Rename to render.yaml only if you decide to pay.
+services:
+  - type: web
+    name: kompass-inbound
+    runtime: docker
+    plan: starter          # a persistent disk needs a paid instance; the DB holds consented leads
+    disk: {name: kompass-data, mountPath: /data, sizeGB: 1}
+    envVars:
+      - {key: KOMPASS_PROVIDER, value: groq}
+      - {key: GROQ_API_KEY, sync: false}
+      - {key: SLACK_BOT_TOKEN, sync: false}
+      - {key: SLACK_CHANNEL, sync: false}
+      - {key: SLACK_SIGNING_SECRET, sync: false}
+      - {key: HUBSPOT_TOKEN, sync: false}
+  - type: cron
+    name: kompass-retention
+    runtime: docker
+    schedule: "13 3 * * *"
+    dockerCommand: python -m kompass.inbound.retention

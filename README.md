@@ -19,7 +19,7 @@ A self-learning GTM engine for DACH deep-tech (robotics, automation, industrial 
 ```bash
 pip install -r requirements.txt pytest
 python scripts/demo.py           # all five modules end to end on fixtures (mock LLM)
-KOMPASS_LLM=mock pytest -q       # 65 tests
+KOMPASS_LLM=mock pytest -q       # 78 tests
 ```
 Mock mode uses keyword rules instead of a model. It proves the system works; its numbers are never results.
 
@@ -30,7 +30,11 @@ Mock mode uses keyword rules instead of a model. It proves the system works; its
 | AI for classification, signals, drafts, evals | **Groq** free tier (`openai/gpt-oss-120b`), set in `kompass/config.yaml` → `llm.provider` | Daily rate limits; draft quality below Claude. Switch any time: `KOMPASS_PROVIDER=anthropic` |
 | Scheduled jobs + CI | **GitHub Actions**, free on public repos | none for this workload |
 | AEO radar | **Gemini** free tier only (set a current model id in `config.yaml`) | Can't measure ChatGPT / Claude answers without their paid APIs; label reports "Gemini only" |
-| Inbound form | **Render free** (`render.free.yaml`) + **HubSpot free CRM** as the lead store | Sleeps after 15 min (keep awake with a free pinger on `/healthz`); no disk, so the server rebuilds its account list from `data/accounts_public.csv` on start and leads live in HubSpot |
+| Inbound form | **Render free** (`render.yaml`) + **HubSpot free CRM** as the lead store | Sleeps after 15 min (keep awake with a free pinger on `/healthz`); no disk, so the server rebuilds its account list from `data/accounts_public.csv` on start and leads live in HubSpot |
+
+**Zero-cost guard:** paid providers (Claude, OpenAI, Perplexity) are refused unless `KOMPASS_ALLOW_PAID=true` is set on purpose; scheduled GitHub jobs are never given paid keys; the default Render blueprint (`render.yaml`) is the free plan (the paid one is `render.paid.yaml.example` and is never picked up automatically). To stay at €0, don't link a billing account to Gemini/Google AI Studio and don't upgrade Groq.
+
+**No secrets in code:** keys are read only from environment variables / GitHub & Render secrets (`.env.example` lists them; `.env` is git-ignored). `scripts/check_secrets.py` scans every file on each push and fails CI if anything key-shaped is committed. Optional local hook: `cp scripts/check_secrets.py .git/hooks/pre-commit`.
 
 Privacy guard: inbound lead text is never sent to a provider whose free tier trains on prompts (Gemini free is marked so in `config.yaml`). If configured that way, leads route to a human instead.
 
@@ -67,5 +71,5 @@ claude mcp add kompass -- python -m kompass.mcp_server   # let Claude query the 
 ```
 context/   strategy as code        kompass/   pipeline code (signals/, review/, learn/, aeo/, inbound/)
 prompts/   versioned prompts       eval/      golden set, judge, gate, hand-label checks
-aeo/       questions + vendors     specs/     one spec per module      tests/  65 tests + fixtures
+aeo/       questions + vendors     specs/     one spec per module      tests/  78 tests + fixtures
 ```

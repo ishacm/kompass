@@ -26,6 +26,20 @@ CONFIG = yaml.safe_load((ROOT / "kompass" / "config.yaml").read_text())
 LLM = CONFIG["llm"]
 
 
+class PaidProviderError(RuntimeError):
+    """A paid provider was selected without explicitly allowing paid usage."""
+
+
+def paid_allowed() -> bool:
+    return os.environ.get("KOMPASS_ALLOW_PAID", "").lower() == "true"
+
+
+def check_cost(prov: dict) -> None:
+    if prov.get("paid") and not paid_allowed():
+        raise PaidProviderError(f"provider '{prov['id']}' costs money and KOMPASS_ALLOW_PAID is not 'true'. "
+                                f"Use the free provider (groq) or set KOMPASS_ALLOW_PAID=true deliberately.")
+
+
 class PrivacyError(RuntimeError):
     """A personal-data purpose was sent to a provider that may train on it."""
 
@@ -121,6 +135,7 @@ def complete_json(prompt: str, purpose: str, *, model: str | None = None, max_to
         return out
 
     prov = provider(provider_override or LLM.get("purpose_providers", {}).get(purpose))
+    check_cost(prov)
     check_privacy(purpose, prov)
     model = model or os.environ.get("KOMPASS_MODEL") or prov.get("model")
     if not model:
@@ -156,6 +171,7 @@ def complete_text(prompt: str, purpose: str, *, provider: dict | None = None, sy
         res = handle(purpose, prompt, context or {})
         _log(purpose, f"mock:{prov['id']}", 0, 0, int((time.time() - t0) * 1000), True)
         return (res["answer"], res.get("citations", [])) if with_citations else res["answer"]
+    check_cost(prov)
     try:
         text, tin, tout, data = _call(prov, model, prompt, system, max_tokens)
         cites = list(data.get("citations") or []) + \
