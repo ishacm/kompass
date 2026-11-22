@@ -1,6 +1,8 @@
 name: GTM CI/CD
 
 on:
+  push:
+    branches: [main]
   pull_request:
     paths: ["prompts/**", "kompass/**", "eval/**", "context/**"]
   schedule:

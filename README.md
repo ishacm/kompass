@@ -1,5 +1,7 @@
 # Kompass
 
+[![tests](https://github.com/ishacm/kompass/actions/workflows/eval.yml/badge.svg)](https://github.com/ishacm/kompass/actions/workflows/eval.yml)
+
 A self-learning GTM engine for DACH deep-tech (robotics, automation, industrial AI).
 **Agents propose, evals check, humans approve.**
 
