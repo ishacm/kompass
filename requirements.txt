@@ -1,0 +1,8 @@
+duckdb
+pyyaml
+mcp[cli]
+anthropic
+httpx
+fastapi
+uvicorn
+python-multipart

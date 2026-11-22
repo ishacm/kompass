@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workzag-jobs>
+  <position>
+    <id>1001</id><office>München</office><department>Sales</department>
+    <name>Founding Account Executive (m/w/d)</name>
+    <jobDescriptions><jobDescription><name>Aufgaben</name><value><![CDATA[<p>Build our first sales pipeline with manufacturing customers.</p>]]></value></jobDescription></jobDescriptions>
+    <createdAt>2026-11-10T09:00:00+00:00</createdAt>
+  </position>
+  <position>
+    <id>1002</id><office>München</office><department>Operations</department>
+    <name>Revenue Operations Manager (m/w/d)</name>
+    <jobDescriptions><jobDescription><name>Aufgaben</name><value><![CDATA[<p>Own our CRM and reporting.</p>]]></value></jobDescription></jobDescriptions>
+    <createdAt>2026-11-12T09:00:00+00:00</createdAt>
+  </position>
+  <position>
+    <id>1003</id><office>München</office><department>Engineering</department>
+    <name>Embedded Software Engineer (m/w/d)</name>
+    <jobDescriptions><jobDescription><name>Aufgaben</name><value><![CDATA[<p>Firmware for our arms.</p>]]></value></jobDescription></jobDescriptions>
+    <createdAt>2026-11-12T09:00:00+00:00</createdAt>
+  </position>
+</workzag-jobs>

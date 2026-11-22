@@ -1,0 +1,56 @@
+name: Scheduled pipeline
+
+# Off until you set the repository variable KOMPASS_ENABLED=true
+# (Settings -> Secrets and variables -> Actions -> Variables) and add the secrets below.
+on:
+  schedule:
+    - cron: "23 5 * * 1-5"    # weekdays: job-board signals + drafts for review
+    - cron: "41 4 * * 2"      # Tuesdays: AEO visibility run
+  workflow_dispatch:
+    inputs:
+      job: {description: "signals or aeo", default: "signals"}
+
+concurrency: {group: kompass-pipeline, cancel-in-progress: false}
+
+jobs:
+  run:
+    if: vars.KOMPASS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    env:
+      KOMPASS_LLM: live
+      KOMPASS_DB: data/kompass.duckdb
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements.txt
+      # The database is company-level data only (no inbound leads) and is kept in the Actions cache,
+      # never committed to this public repo.
+      - uses: actions/cache/restore@v4
+        with:
+          path: data/kompass.duckdb
+          key: kompass-db-${{ github.run_id }}
+          restore-keys: kompass-db-
+      - name: "First run - load and score accounts"
+        if: hashFiles('data/kompass.duckdb') == ''
+        run: |
+          python -m kompass.ingest data/seed_accounts.csv
+          python -m kompass.classify
+          python -m kompass.score
+      - name: Signals
+        if: github.event.schedule == '23 5 * * 1-5' || inputs.job == 'signals'
+        run: python -m kompass.signals.run --detect && python -m kompass.signals.report
+      - name: AEO
+        if: github.event.schedule == '41 4 * * 2' || inputs.job == 'aeo'
+        run: python -m kompass.aeo.run && python -m kompass.aeo.analyze --emit-signals
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: data/kompass.duckdb
+          key: kompass-db-${{ github.run_id }}

@@ -1,0 +1,9 @@
+# CI gate thresholds: a candidate prompt/model fails if any rule below is broken vs the baseline.
+max_drop:
+  guard_pass_rate: 0.03       # share of drafts passing the Module 2 guard
+  must_mention_rate: 0.05     # share of required facts present
+must_not_increase:
+  unsupported_claim_rate: 0.0 # uncited or invented claims per draft
+absolute:
+  must_not_violations: 0      # forbidden phrases appearing at all
+  min_cases: 6

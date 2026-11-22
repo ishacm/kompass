@@ -1,0 +1,67 @@
+# Golden set for draft prompts.
+# The cases below are SYNTHETIC fixtures so the harness runs in CI from day one.
+# Before publishing any numbers: replace them with 25 real cases built from real postings
+# you have checked by hand (keep `synthetic: false`), and never publish metrics from synthetic cases.
+
+cases:
+  - id: g01
+    synthetic: true
+    account: {account_id: alpha.example, name: Alpha Robotics GmbH, domain: alpha.example, tier: A, country: DE}
+    signals:
+      - {signal_type: first_sales_hire, title: "Founding Account Executive (m/w/d)", url: "https://alpha.jobs.personio.de/job/1",
+         evidence_text: "Build our first sales pipeline with manufacturing customers."}
+    must_mention: ["account executive"]
+    must_not: ["guarantee", "100%"]
+
+  - id: g02
+    synthetic: true
+    account: {account_id: beta.example, name: Beta Vision AG, domain: beta.example, tier: A, country: CH}
+    signals:
+      - {signal_type: sales_leadership_hire, title: "Head of Sales DACH", url: "https://boards.greenhouse.io/beta/jobs/2",
+         evidence_text: "Own revenue across DACH and build the team."}
+      - {signal_type: revops_or_gtm_ops_hire, title: "CRM Manager", url: "https://boards.greenhouse.io/beta/jobs/3",
+         evidence_text: "Migrate us to a new CRM."}
+    must_mention: ["head of sales"]
+    must_not: ["guarantee"]
+
+  - id: g03
+    synthetic: true
+    account: {account_id: gamma.example, name: Gamma Logistics Automation GmbH, domain: gamma.example, tier: B, country: AT}
+    signals:
+      - {signal_type: international_expansion, title: "Account Executive, North America", url: "https://jobs.lever.co/gamma/4",
+         evidence_text: "First commercial hire in Boston."}
+      - {signal_type: partner_or_channel_hire, title: "Partner Manager", url: "https://jobs.lever.co/gamma/5",
+         evidence_text: "Grow our integrator network."}
+    must_mention: ["north america"]
+    must_not: ["guarantee"]
+
+  - id: g04
+    synthetic: true
+    account: {account_id: delta.example, name: Delta Cobots SE, domain: delta.example, tier: A, country: DE}
+    signals:
+      - {signal_type: revops_or_gtm_ops_hire, title: "Revenue Operations Lead", url: "https://jobs.ashbyhq.com/delta/6",
+         evidence_text: "Set up our GTM stack from scratch."}
+      - {signal_type: sales_hire, title: "Sales Manager (all genders)", url: "https://jobs.ashbyhq.com/delta/7",
+         evidence_text: "Sell cobots to mid-sized manufacturers."}
+    must_mention: ["revenue operations"]
+    must_not: ["guarantee"]
+
+  - id: g05
+    synthetic: true
+    account: {account_id: eps.example, name: Epsilon Humanoids GmbH, domain: eps.example, tier: B, country: DE}
+    signals:
+      - {signal_type: first_sales_hire, title: "First Sales Hire - Industrial Customers", url: "https://eps.jobs.personio.de/job/8",
+         evidence_text: "You will close our first 10 pilot customers."}
+    must_mention: ["sales"]
+    must_not: ["guarantee"]
+
+  - id: g06
+    synthetic: true
+    account: {account_id: zeta.example, name: Zeta Simulation GmbH, domain: zeta.example, tier: A, country: DE}
+    signals:
+      - {signal_type: customer_deployment_hire, title: "Field Application Engineer", url: "https://zeta.jobs.personio.de/job/9",
+         evidence_text: "Support customer deployments on site."}
+      - {signal_type: sales_hire, title: "Key Account Manager Automotive", url: "https://zeta.jobs.personio.de/job/10",
+         evidence_text: "Grow automotive OEM accounts."}
+    must_mention: ["key account"]
+    must_not: ["guarantee"]

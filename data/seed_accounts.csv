@@ -1,0 +1,11 @@
+name,domain,country,employees,founded,ats_provider,ats_slug,source
+NEURA Robotics GmbH,neura-robotics.com,DE,,,,,seed_manual
+Franka Robotics GmbH,franka.de,DE,,,,,seed_manual
+Agile Robots SE,agile-robots.com,DE,,,,,seed_manual
+RobCo GmbH,rob.co,DE,,,,,seed_manual
+Wandelbots GmbH,wandelbots.com,DE,,,,,seed_manual
+Magazino GmbH,magazino.eu,DE,,,,,seed_manual
+Sereact GmbH,sereact.ai,DE,,,,,seed_manual
+ArtiMinds Robotics GmbH,artiminds.com,DE,,,,,seed_manual
+Roboception GmbH,roboception.com,DE,,,,,seed_manual
+Neura Robotics,https://www.neura-robotics.com/,DE,,,,,duplicate_test

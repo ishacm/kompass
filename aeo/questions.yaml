@@ -1,0 +1,63 @@
+# Buyer questions, asked in German and English. Same id = same question in both languages.
+# Written as a buyer would ask an assistant, not as SEO keywords.
+questions:
+  - {id: q01, persona: founder_ceo, segment: cobots_and_arms,
+     de: "Welcher Cobot-Hersteller eignet sich für einen mittelständischen Fertigungsbetrieb in Deutschland?",
+     en: "Which cobot manufacturer is best for a mid-sized manufacturer in Germany?"}
+  - {id: q02, persona: head_of_sales, segment: cobots_and_arms,
+     de: "Welche kollaborativen Roboter lassen sich am schnellsten ohne Programmierkenntnisse einrichten?",
+     en: "Which collaborative robots are fastest to set up without programming skills?"}
+  - {id: q03, persona: founder_ceo, segment: cobots_and_arms,
+     de: "Gibt es europäische Alternativen zu Universal Robots?",
+     en: "Are there European alternatives to Universal Robots?"}
+  - {id: q04, persona: head_of_sales, segment: mobile_robots_amr,
+     de: "Welche autonomen mobilen Roboter (AMR) werden in deutschen Lagern eingesetzt?",
+     en: "Which autonomous mobile robots are used in German warehouses?"}
+  - {id: q05, persona: founder_ceo, segment: mobile_robots_amr,
+     de: "Welcher Anbieter für fahrerlose Transportsysteme passt zu einer Fabrik mit 200 Mitarbeitern?",
+     en: "Which AGV/AMR vendor fits a factory with 200 employees?"}
+  - {id: q06, persona: head_of_sales, segment: warehouse_and_logistics_automation,
+     de: "Welche Firmen bieten robotergestütztes Kommissionieren (Piece Picking) in Europa an?",
+     en: "Which companies offer robotic piece picking in Europe?"}
+  - {id: q07, persona: founder_ceo, segment: warehouse_and_logistics_automation,
+     de: "Wie automatisiere ich mein Lager mit Robotern, und welche Anbieter sollte ich vergleichen?",
+     en: "How do I automate my warehouse with robots, and which vendors should I compare?"}
+  - {id: q08, persona: head_of_sales, segment: machine_vision,
+     de: "Welche 3D-Kamerasysteme eignen sich für Griff-in-die-Kiste-Anwendungen?",
+     en: "Which 3D vision systems are good for bin picking?"}
+  - {id: q09, persona: founder_ceo, segment: machine_vision,
+     de: "Welche deutschen Anbieter gibt es für industrielle Bildverarbeitung mit KI?",
+     en: "Which German companies provide AI-based industrial machine vision?"}
+  - {id: q10, persona: head_of_sales, segment: robot_software_and_simulation,
+     de: "Mit welcher Software kann ich Roboter herstellerunabhängig programmieren?",
+     en: "What software lets me program robots from different brands in one place?"}
+  - {id: q11, persona: founder_ceo, segment: robot_software_and_simulation,
+     de: "Welche Tools gibt es für die Offline-Programmierung und Simulation von Industrierobotern?",
+     en: "What tools exist for offline programming and simulation of industrial robots?"}
+  - {id: q12, persona: head_of_growth_marketing, segment: humanoids,
+     de: "Welche europäischen Firmen entwickeln humanoide Roboter für die Industrie?",
+     en: "Which European companies are building humanoid robots for industry?"}
+  - {id: q13, persona: founder_ceo, segment: humanoids,
+     de: "Sind humanoide Roboter schon in deutschen Fabriken im Einsatz, und von welchen Herstellern?",
+     en: "Are humanoid robots already used in German factories, and from which makers?"}
+  - {id: q14, persona: head_of_sales, segment: industrial_ai_software,
+     de: "Welche KI-Software hilft Fertigungsbetrieben bei der Qualitätskontrolle?",
+     en: "Which AI software helps manufacturers with quality inspection?"}
+  - {id: q15, persona: founder_ceo, segment: industrial_ai_software,
+     de: "Welche Start-ups in Deutschland bieten KI für die Produktion an?",
+     en: "Which startups in Germany offer AI for manufacturing?"}
+  - {id: q16, persona: head_of_growth_marketing, segment: cobots_and_arms,
+     de: "Was sind die führenden Robotik-Start-ups in München?",
+     en: "What are the leading robotics startups in Munich?"}
+  - {id: q17, persona: head_of_growth_marketing, segment: other_industrial,
+     de: "Welche Robotik-Unternehmen aus Deutschland sollte man 2026 kennen?",
+     en: "Which German robotics companies should I know about in 2026?"}
+  - {id: q18, persona: head_of_sales, segment: cobots_and_arms,
+     de: "Welcher Roboterarm ist gut für Maschinenbeschickung (Machine Tending) bei kleinen Losgrößen?",
+     en: "Which robot arm is good for machine tending with small batch sizes?"}
+  - {id: q19, persona: founder_ceo, segment: mobile_robots_amr,
+     de: "Welche Robotik-Anbieter bieten Robotics-as-a-Service oder Mietmodelle in Deutschland an?",
+     en: "Which robotics vendors offer robotics-as-a-service or rental models in Germany?"}
+  - {id: q20, persona: head_of_sales, segment: other_industrial,
+     de: "Welcher Systemintegrator oder Anbieter hilft beim ersten Roboterprojekt im Mittelstand?",
+     en: "Which vendor or integrator helps a mid-sized company with its first robot project?"}

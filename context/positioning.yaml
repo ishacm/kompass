@@ -1,0 +1,35 @@
+# Positioning, written for agents. Every outbound draft and inbound answer must be grounded here.
+version: 1
+
+personas:
+  - id: founder_ceo
+    title_patterns: ["founder", "ceo", "geschäftsführer", "managing director"]
+    cares_about: ["first repeatable pipeline", "founder time spent selling", "investor-ready GTM metrics"]
+  - id: head_of_sales
+    title_patterns: ["head of sales", "vp sales", "vertriebsleiter", "cro"]
+    cares_about: ["which accounts to call this week", "rep research time", "CRM data quality"]
+  - id: head_of_growth_marketing
+    title_patterns: ["head of marketing", "growth", "demand gen"]
+    cares_about: ["inbound speed-to-lead", "AI search visibility", "attribution"]
+
+pains:
+  - id: no_signal_targeting
+    statement: "Outbound goes to static lists, not to accounts with a reason to buy now."
+  - id: slow_research
+    statement: "Reps spend too long researching each technical account before reaching out."
+  - id: slow_inbound
+    statement: "Demo requests wait hours before anyone qualifies or answers them."
+  - id: invisible_in_ai_search
+    statement: "Buyers ask ChatGPT for suppliers, and the company is missing or described wrongly."
+
+value_props:
+  no_signal_targeting: "Signal-triggered account lists with a cited 'why now', reviewed by a human before anything is sent."
+  slow_research: "One-page account briefs with sources, generated in minutes and evaluated for accuracy."
+  slow_inbound: "Inbound qualified and routed in under two minutes, with a human handoff."
+  invisible_in_ai_search: "Weekly tracking of how AI assistants describe you vs competitors, in German and English."
+
+rules:
+  - "Never state a fact about a prospect without a source URL."
+  - "No invented metrics, customers or quotes."
+  - "Two to four sentences maximum for first-touch drafts."
+  - "Disclose AI use wherever an AI interacts directly with a person (EU AI Act Art. 50)."

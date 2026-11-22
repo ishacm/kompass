@@ -1,0 +1,10 @@
+data/*.duckdb
+data/*.duckdb.wal
+data/cache/
+eval/reports/
+eval/baseline.json
+aeo/reports/
+prompts/proposals/
+__pycache__/
+.pytest_cache/
+.env

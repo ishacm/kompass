@@ -1,0 +1,5 @@
+# Which prompt version is live. Changed only by pull request (see specs/03-gtm-ci-cd-lab.md).
+draft:
+  production: v1
+  experiment: null        # e.g. v2 while an A/B test runs
+  experiment_share: 0.0   # fraction of active accounts routed to the experiment

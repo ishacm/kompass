@@ -1,0 +1,20 @@
+# Vendors to detect in answers, in addition to every account in the context layer
+# (accounts are matched by their short name automatically). Aliases are case-insensitive.
+# Extend this list with the competitors your prospects actually lose deals to.
+competitors:
+  - {id: universal-robots, name: Universal Robots, aliases: ["Universal Robots", "UR3", "UR5", "UR10"]}
+  - {id: kuka, name: KUKA, aliases: ["KUKA"]}
+  - {id: abb, name: ABB Robotics, aliases: ["ABB"]}
+  - {id: fanuc, name: FANUC, aliases: ["FANUC"]}
+  - {id: yaskawa, name: Yaskawa, aliases: ["Yaskawa", "Motoman"]}
+  - {id: doosan, name: Doosan Robotics, aliases: ["Doosan"]}
+  - {id: techman, name: Techman Robot, aliases: ["Techman"]}
+  - {id: mir, name: Mobile Industrial Robots, aliases: ["Mobile Industrial Robots", "MiR"]}
+  - {id: locus, name: Locus Robotics, aliases: ["Locus Robotics"]}
+  - {id: cognex, name: Cognex, aliases: ["Cognex"]}
+  - {id: keyence, name: Keyence, aliases: ["Keyence"]}
+  - {id: basler, name: Basler, aliases: ["Basler"]}
+  - {id: sick, name: SICK, aliases: ["SICK AG"]}
+
+# aliases that need extra care because they are common words
+case_sensitive_aliases: ["MiR", "SICK AG", "ABB", "KUKA", "FANUC"]

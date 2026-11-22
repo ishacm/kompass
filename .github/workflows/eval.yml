@@ -1,0 +1,71 @@
+name: GTM CI/CD
+
+on:
+  pull_request:
+    paths: ["prompts/**", "kompass/**", "eval/**", "context/**"]
+  schedule:
+    - cron: "17 6 * * 1"      # Monday drift check on the production prompt
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements.txt pytest
+      - run: KOMPASS_LLM=mock pytest -q
+
+  eval-gate:
+    if: github.event_name == 'pull_request'
+    needs: tests
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KOMPASS_LLM: live
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements.txt
+      - name: Find changed prompt versions
+        id: changed
+        run: |
+          V=$(git diff --name-only origin/${{ github.base_ref }}... -- prompts/draft/ | grep -oE 'v[0-9]+' | sort -u | tr '\n' ' ')
+          echo "versions=$V" >> "$GITHUB_OUTPUT"
+      - name: Refuse to pass silently without a live eval
+        if: steps.changed.outputs.versions != '' && env.ANTHROPIC_API_KEY == ''
+        run: |
+          echo "::error::Prompt files changed but ANTHROPIC_API_KEY is not set, so the live eval gate cannot run."
+          exit 1
+      - name: Live eval + gate
+        if: steps.changed.outputs.versions != '' && env.ANTHROPIC_API_KEY != ''
+        run: |
+          PROD=$(python -c "import yaml;print(yaml.safe_load(open('prompts/registry.yaml'))['draft']['production'])")
+          python eval/run_eval.py --versions $PROD ${{ steps.changed.outputs.versions }} --out eval/reports/pr.json
+          for V in ${{ steps.changed.outputs.versions }}; do python eval/gate.py --report eval/reports/pr.json --version $V; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: eval-report, path: eval/reports/}
+
+  drift:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions: {issues: write, contents: read}
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KOMPASS_LLM: live
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements.txt
+      - name: Re-run production prompt on the golden set
+        run: |
+          PROD=$(python -c "import yaml;print(yaml.safe_load(open('prompts/registry.yaml'))['draft']['production'])")
+          python eval/run_eval.py --versions $PROD --out eval/reports/drift.json
+          python eval/gate.py --report eval/reports/drift.json --version $PROD \
+            || gh issue create --title "Drift: production prompt $PROD fell below baseline" --body "See the drift job log."

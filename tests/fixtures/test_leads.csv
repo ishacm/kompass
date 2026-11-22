@@ -1,0 +1,51 @@
+name,email,company,message,consent,expected_route
+Hot 0,lead0@testbot.example,Testbot,Could you run a pilot for our outbound in DACH?,yes,hot
+Hot 1,lead1@testbot.example,Testbot,"Looking for help building our GTM pipeline, would love a demo of your system.",yes,hot
+Hot 2,lead2@testbot.example,Testbot,We're hiring for GTM and want to talk about a project.,yes,hot
+Hot 3,lead3@testbot.example,Testbot,We need a signal-based outbound setup before our first AE starts. Can we talk?,yes,hot
+Hot 4,lead4@testbot.example,Testbot,We need a signal-based outbound setup before our first AE starts. Can we talk?,yes,hot
+Hot 5,lead5@testbot.example,Testbot,Interested in your inbound routing project for our team.,yes,hot
+Hot 6,lead6@testbot.example,Testbot,We need a signal-based outbound setup before our first AE starts. Can we talk?,yes,hot
+Hot 7,lead7@testbot.example,Testbot,Could you run a pilot for our outbound in DACH?,yes,hot
+Hot 8,lead8@testbot.example,Testbot,Interested in your inbound routing project for our team.,yes,hot
+Hot 9,lead9@testbot.example,Testbot,We need a signal-based outbound setup before our first AE starts. Can we talk?,yes,hot
+Hot 10,lead10@testbot.example,Testbot,Interested in your inbound routing project for our team.,yes,hot
+Hot 11,lead11@testbot.example,Testbot,"Looking for help building our GTM pipeline, would love a demo of your system.",yes,hot
+Nurture 0,lead0@bigcorp.example,Bigcorp,We'd like to explore a GTM project for our plant automation business.,yes,nurture
+Nurture 1,lead1@bigcorp.example,Bigcorp,We'd like to explore a GTM project for our plant automation business.,yes,nurture
+Nurture 2,lead2@bigcorp.example,Bigcorp,Can you help us with outbound? Small team.,yes,nurture
+Nurture 3,lead3@bigcorp.example,Bigcorp,Can you help us with outbound? Small team.,yes,nurture
+Nurture 4,lead4@bigcorp.example,Bigcorp,We'd like to explore a GTM project for our plant automation business.,yes,nurture
+Nurture 5,lead5@bigcorp.example,Bigcorp,We'd like to explore a GTM project for our plant automation business.,yes,nurture
+Nurture 6,lead6@bigcorp.example,Bigcorp,We'd like to explore a GTM project for our plant automation business.,yes,nurture
+Nurture 7,lead7@bigcorp.example,Bigcorp,Want to talk about a pilot for pipeline signals.,yes,nurture
+Personal 0,founder0@gmail.com,Stealth,We're hiring for GTM and want to talk about a project.,yes,human_review
+Personal 1,founder1@gmail.com,Stealth,We need a signal-based outbound setup before our first AE starts. Can we talk?,yes,human_review
+Personal 2,founder2@gmail.com,Stealth,Interested in your inbound routing project for our team.,yes,human_review
+Personal 3,founder3@gmail.com,Stealth,We need a signal-based outbound setup before our first AE starts. Can we talk?,yes,human_review
+Personal 4,founder4@gmail.com,Stealth,"Looking for help building our GTM pipeline, would love a demo of your system.",yes,human_review
+Personal 5,founder5@gmail.com,Stealth,Interested in your inbound routing project for our team.,yes,human_review
+Job 0,cand0@web.de,,I'd like to apply for a job on your team.,yes,forward_owner
+Job 1,cand1@web.de,,Bewerbung als GTM Engineer.,yes,forward_owner
+Job 2,cand2@web.de,,I'd like to apply for a job on your team.,yes,forward_owner
+Job 3,cand3@web.de,,Recruiter here: I have a job opening that fits you.,yes,forward_owner
+Job 4,cand4@web.de,,I'd like to apply for a job on your team.,yes,forward_owner
+Job 5,cand5@web.de,,Recruiter here: I have a job opening that fits you.,yes,forward_owner
+Spam 0,x0@spam.example,,"Crypto opportunity, whatsapp me",yes,drop
+Spam 1,x1@spam.example,,"Crypto opportunity, whatsapp me",yes,drop
+Spam 2,x2@spam.example,,We offer cheap backlinks and SEO services!,yes,drop
+Spam 3,x3@spam.example,,Guest post on our casino blog?,yes,drop
+Spam 4,x4@spam.example,,We offer cheap backlinks and SEO services!,yes,drop
+Spam 5,x5@spam.example,,Guest post on our casino blog?,yes,drop
+Unclear 0,u0@lagerfix.example,Lagerfix,"Interesting stuff, keep it up.",yes,human_review
+Unclear 1,u1@lagerfix.example,Lagerfix,Saw your site.,yes,human_review
+Unclear 2,u2@lagerfix.example,Lagerfix,Hi,yes,human_review
+Unclear 3,u3@lagerfix.example,Lagerfix,Saw your site.,yes,human_review
+Unclear 4,u4@lagerfix.example,Lagerfix,"Interesting stuff, keep it up.",yes,human_review
+US 0,cto0@valleybots.example,Valley Bots,We need a signal-based outbound setup before our first AE starts. Can we talk?,yes,human_review
+US 1,cto1@valleybots.example,Valley Bots,Interested in your inbound routing project for our team.,yes,human_review
+US 2,cto2@valleybots.example,Valley Bots,We need a signal-based outbound setup before our first AE starts. Can we talk?,yes,human_review
+NoConsent 0,nc0@testbot.example,Testbot,Interested in your inbound routing project for our team.,,no_consent
+NoConsent 1,nc1@testbot.example,Testbot,We need a signal-based outbound setup before our first AE starts. Can we talk?,,no_consent
+NoConsent 2,nc2@testbot.example,Testbot,Interested in your inbound routing project for our team.,,no_consent
+NoConsent 3,nc3@testbot.example,Testbot,"Looking for help building our GTM pipeline, would love a demo of your system.",,no_consent

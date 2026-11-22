@@ -1,0 +1,43 @@
+# Kompass ICP — machine-readable so agents can read (and later improve) the strategy.
+# Edit freely; scoring in kompass/score.py reads these weights directly.
+
+version: 1
+market: "DACH deep-tech: robotics, automation, industrial AI"
+
+segments:            # allowed values for the LLM segment classifier
+  - cobots_and_arms
+  - mobile_robots_amr
+  - humanoids
+  - machine_vision
+  - robot_software_and_simulation
+  - industrial_ai_software
+  - warehouse_and_logistics_automation
+  - other_industrial
+  - not_a_fit
+
+firmographics:
+  countries: [DE, AT, CH]
+  employees_min: 15
+  employees_max: 500
+  founded_after: 2012
+
+# Points per criterion. Tier thresholds below.
+weights:
+  core_segment: 30          # segment in core_segments
+  adjacent_segment: 15      # segment in adjacent_segments
+  country_match: 15
+  size_in_range: 20
+  founded_recently: 10
+  sells_b2b_industrial: 15  # LLM flag: sells to manufacturers / logistics
+
+core_segments: [cobots_and_arms, mobile_robots_amr, humanoids, robot_software_and_simulation]
+adjacent_segments: [machine_vision, industrial_ai_software, warehouse_and_logistics_automation]
+
+tiers:
+  A: 75
+  B: 50
+  C: 0
+
+disqualifiers:
+  - segment == not_a_fit
+  - country not in firmographics.countries

@@ -1,0 +1,72 @@
+default_model: claude-sonnet-5-5
+
+# Fill in from your provider's current price page (USD or EUR per 1M tokens).
+# Left empty on purpose: cost reports show tokens only until you add real prices.
+prices_per_million_tokens:
+  claude-sonnet-5-5: {input: null, output: null}
+
+activation:            # Module 2: when does an account become worth a human's attention?
+  window_days: 30
+  tiers: [A, B]
+  min_score: 4         # sum of signal weights (see classify_signals.SIGNAL_WEIGHT)
+  min_confidence: 0.6
+  strong_confidence: 0.85
+
+personas_by_signal:    # who should receive the message (role only; reviewer finds the person)
+  first_sales_hire: founder_ceo
+  sales_leadership_hire: founder_ceo
+  sales_hire: head_of_sales
+  revops_or_gtm_ops_hire: head_of_sales
+  partner_or_channel_hire: head_of_sales
+  international_expansion: founder_ceo
+  customer_deployment_hire: head_of_sales
+  aeo_gap: head_of_growth_marketing
+
+channel_policy:        # operational default, not legal advice: check with counsel for your case
+  DE: {first_touch: linkedin_or_phone, note: "Cold B2B email in Germany needs at least presumed consent (UWG §7). Prefer LinkedIn or a call."}
+  AT: {first_touch: linkedin_or_phone, note: "Austria restricts unsolicited email (TKG). Prefer LinkedIn or a call."}
+  CH: {first_touch: email_ok_with_opt_out, note: "Include sender identity and an easy opt-out (UWG Art. 3)."}
+  default: {first_touch: linkedin, note: "Check local rules before email."}
+
+drafts:
+  banned_phrases: ["hope this finds you well", "quick question", "synergy", "game-changer",
+                   "revolutionize", "i noticed you", "just following up", "touch base"]
+  min_sentences: 2
+  max_sentences: 4
+
+aeo:
+  repeats: 3             # same question asked 3x to measure answer stability
+  system: "Answer as a helpful assistant would for a business buyer. Name specific companies where relevant."
+  # Providers without an API key in the environment are skipped and reported.
+  # Set `model` to a current model id from each provider's docs before running.
+  providers:
+    - {id: claude, kind: anthropic, model: claude-sonnet-5-5}
+    - {id: openai, kind: openai_compatible, base_url: "https://api.openai.com/v1", key_env: OPENAI_API_KEY, model: null}
+    - {id: gemini, kind: openai_compatible, base_url: "https://generativelanguage.googleapis.com/v1beta/openai",
+       key_env: GEMINI_API_KEY, model: null}
+    - {id: perplexity, kind: openai_compatible, base_url: "https://api.perplexity.ai", key_env: PERPLEXITY_API_KEY,
+       model: null}
+
+inbound:
+  time_budget_seconds: 120        # anything slower goes to a human instead of waiting
+  enrichment_timeout_seconds: 15
+  retention_days: 90              # leads not converted are deleted after this
+  booking_url: "https://cal.com/your-handle/intro"          # replace with your real link
+  owner_email: "you@example.com"                            # replace
+  ai_notice: >-
+    An AI assistant reads your request first to route it to the right next step.
+    A human reads every handoff, and you can ask for a human at any time.
+  free_mail_domains: [gmail.com, googlemail.com, gmx.de, gmx.net, gmx.at, gmx.ch, web.de, t-online.de, outlook.com,
+                      hotmail.com, live.com, yahoo.com, yahoo.de, icloud.com, me.com, posteo.de, freenet.de, mail.de,
+                      proton.me, protonmail.com, aol.com, bluewin.ch]
+  case_studies:                   # which case study to send, by the visitor's segment
+    default: {title: "Signal agent with human approval", url: "/work/signal-agent"}
+    cobots_and_arms: {title: "Signal agent with human approval", url: "/work/signal-agent"}
+    mobile_robots_amr: {title: "Signal agent with human approval", url: "/work/signal-agent"}
+    machine_vision: {title: "AI assistant visibility radar", url: "/work/aeo-radar"}
+    industrial_ai_software: {title: "GTM CI/CD lab", url: "/work/gtm-ci-cd"}
+
+http:
+  timeout_seconds: 10
+  user_agent: "KompassResearchBot/0.1 (+contact: your-email@example.com)"
+  min_seconds_between_requests_per_host: 2
